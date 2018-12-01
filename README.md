@@ -1,4 +1,4 @@
-# wallpaper_app
+# Flutter Wallpaper App
 
 Wallpaper app build with Love in Flutter
 
