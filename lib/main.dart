@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 void main() => runApp(WallpaperApp());
 
 class WallpaperApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -27,15 +26,48 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> litems = ["https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-  "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-  "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-  "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-  "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg"];
+//  List<String> serverWallpaperList = [
+//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
+//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg"
+//  ];
+
+  getWallpaperList() {
+    List<String> localWallpaperList = [];
+    for (var i = 0; i <= 20; i++) {
+      localWallpaperList.add(
+          "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg");
+    }
+    return localWallpaperList;
+  }
 
   Widget buildBody(BuildContext ctxt, int index) {
-    return new Card(child: new Image.network(litems[index], fit: BoxFit.cover), elevation: 10, margin: EdgeInsets.all(10.0),);
+    return new Card(
+      child: new Image.network(getWallpaperList()[index], fit: BoxFit.cover),
+      elevation: 10,
+      margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+      ),
+    );
   }
+
+//  Widget buildBody(BuildContext ctxt, int index) {
+//    return new Card(
+//      child: new Image.asset(getWallpaperList()[index], fit: BoxFit.cover),
+//      elevation: 10,
+//      margin: EdgeInsets.all(10.0),
+//      shape: RoundedRectangleBorder(
+//        borderRadius: BorderRadius.all(
+//          Radius.circular(10),
+//        ),
+//      ),
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text(widget.title),
         ),
       ),
-      body: new ListView.builder
-        (
-          itemCount: litems.length,
-          itemBuilder: (BuildContext ctxt, int index) => buildBody(ctxt, index)
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: List.generate(getWallpaperList().length, (index) {
+          return buildBody(context, index);
+        }),
       ),
     );
   }
