@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/appstyles.dart' as appstyles;
+import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:wallpaper_app/wallpaper_detail.dart' as wallpaper_detail;
 
 void main() => runApp(WallpaperApp());
+
+ThemeData appTheme = new ThemeData(
+  primarySwatch: Colors.blue
+);
 
 class WallpaperApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -9,9 +16,7 @@ class WallpaperApp extends StatelessWidget {
     final appTitle = 'Flutter Wallpapers';
 
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: appstyles.appTheme,
       home: MyHomePage(title: appTitle),
     );
   }
@@ -26,48 +31,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-//  List<String> serverWallpaperList = [
-//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg",
-//    "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg"
-//  ];
 
-  getWallpaperList() {
-    List<String> localWallpaperList = [];
-    for (var i = 0; i <= 20; i++) {
-      localWallpaperList.add(
-          "https://cdn.pixabay.com/photo/2018/01/24/17/33/light-bulb-3104355_1280.jpg");
-    }
-    return localWallpaperList;
-  }
-
-  Widget buildBody(BuildContext ctxt, int index) {
-    return new Card(
-      child: new Image.network(getWallpaperList()[index], fit: BoxFit.cover),
-      elevation: 10,
-      margin: EdgeInsets.all(10.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
+  Widget buildBody(BuildContext ctxt, DocumentSnapshot snapshot) {
+    return new GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+//            builder: (context) => wallpaper_detail(serverWallpaperList[index]),
+          ),
+        );
+      },
+      child: new Card(
+        child: new Image.network(snapshot['wallpaperUrl'], fit: BoxFit.cover),
+        elevation: 10,
+        margin: EdgeInsets.all(10.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
         ),
       ),
     );
   }
-
-//  Widget buildBody(BuildContext ctxt, int index) {
-//    return new Card(
-//      child: new Image.asset(getWallpaperList()[index], fit: BoxFit.cover),
-//      elevation: 10,
-//      margin: EdgeInsets.all(10.0),
-//      shape: RoundedRectangleBorder(
-//        borderRadius: BorderRadius.all(
-//          Radius.circular(10),
-//        ),
-//      ),
-//    );
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +62,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Center(
           child: Text(widget.title),
         ),
+        actions: <Widget>[
+          new IconButton(icon: Icon(Icons.more_vert), onPressed: null)
+        ],
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        children: List.generate(getWallpaperList().length, (index) {
-          return buildBody(context, index);
-        }),
+      body: StreamBuilder(
+        stream: Firestore.instance.collection("wallpapers").snapshots(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) return const Text('Loading...');
+          return GridView.count(
+          crossAxisCount: 2,
+          children: List.generate(snapshot.data.documents.length, (index) {
+            return buildBody(context, snapshot.data.documents[index]);
+          }),
+        );
+        }
       ),
     );
   }
