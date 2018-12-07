@@ -42,13 +42,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       },
-      child: new Card(
-        child: new Image.network(snapshot['wallpaperUrl'], fit: BoxFit.cover),
-        elevation: 10,
-        margin: EdgeInsets.all(10.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+      child: new Container(
+        child: new Card(
+          child: new ClipRRect(
+            child: new Image.network(snapshot['wallpaperUrl'], fit: BoxFit.cover),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          elevation: 10,
+          margin: EdgeInsets.all(10.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
           ),
         ),
       ),
