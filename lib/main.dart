@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wallpaper_app/appstyles.dart' as appstyles;
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:wallpaper_app/wallpaper_detail.dart' as wallpaper_detail;
+import 'package:wallpaper_app/wallpaper_detail.dart';
 
 void main() => runApp(WallpaperApp());
 
@@ -16,6 +16,7 @@ class WallpaperApp extends StatelessWidget {
     final appTitle = 'Flutter Wallpapers';
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: appstyles.appTheme,
       home: MyHomePage(title: appTitle),
     );
@@ -32,14 +33,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  Widget buildBody(BuildContext ctxt, DocumentSnapshot snapshot) {
+  Widget buildBody(BuildContext context, int index, DocumentSnapshot snapshot) {
     return new GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-//            builder: (context) => wallpaper_detail(serverWallpaperList[index]),
-          ),
+          MaterialPageRoute(builder: (context) => WallpaperDetail(snapshot['wallpaperUrl'], 'Wallpaper')),
         );
       },
       child: new Container(
@@ -64,9 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(widget.title),
-        ),
+        centerTitle: true,
+        title: Text(widget.title),
         actions: <Widget>[
           new IconButton(icon: Icon(Icons.more_vert), onPressed: null)
         ],
@@ -78,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return GridView.count(
           crossAxisCount: 2,
           children: List.generate(snapshot.data.documents.length, (index) {
-            return buildBody(context, snapshot.data.documents[index]);
+            return buildBody(context, index, snapshot.data.documents[index]);
           }),
         );
         }
